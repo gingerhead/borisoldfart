@@ -80,5 +80,9 @@ module.exports = {
             'ReactDOM': 'react-dom'
         }),
         new ExtractTextPlugin({filename: 'style.css', disable: !isProduction})
-    ]
+    ],
+    devServer: {
+        host: '0.0.0.0',
+        port: 8080
+    }
 };
