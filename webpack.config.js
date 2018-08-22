@@ -4,9 +4,13 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 module.exports = {
-    context: path.resolve(__dirname, 'client'),
-    entry: 'index.js',
+    entry: [
+        path.join(__dirname, 'client', 'index.js'),
+        path.join(__dirname, 'index.pug')
+    ],
     devtool: 'sourcemap',
     output: {
         path: path.join(__dirname, 'dist'),
@@ -20,7 +24,7 @@ module.exports = {
                 loader: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
                     use: [
-                        {loader: 'css-loader'},
+                        {loader: 'css-loader',  options: { minimize: isProduction }},
                         'sass-loader'
                     ]
                 })
@@ -45,6 +49,16 @@ module.exports = {
                         limit: 1024
                     }
                 }
+            },
+            {
+                test: /\.pug$/,
+                use: [
+                    'file-loader?name=[path][name].html',
+                    'extract-loader',
+                    'html-loader',
+                    'pug-html-loader'
+                ],
+                exclude: path.join(__dirname, 'node_modules')
             }
         ]
     },
@@ -65,6 +79,6 @@ module.exports = {
             'React': 'react',
             'ReactDOM': 'react-dom'
         }),
-        new ExtractTextPlugin({filename: 'style-[contenthash].css'})
+        new ExtractTextPlugin({filename: 'style.css', disable: !isProduction})
     ]
 };

@@ -1,0 +1,10 @@
+doctype html
+html(lang='en')
+   head
+     meta(charset='UTF-8')
+     title BORIS OLD FART
+     - if (process.env.NODE_ENV === 'production')
+        link(href='./style.css', rel='stylesheet')
+   body
+     #react-root
+     script(src='./bundle.js')
