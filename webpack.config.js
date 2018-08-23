@@ -51,6 +51,10 @@ module.exports = {
                 }
             },
             {
+                test: /\.(glsl|vert|frag)$/,
+                loader: 'webpack-glsl-loader'
+            },
+            {
                 test: /\.pug$/,
                 use: [
                     'file-loader?name=[path][name].html',

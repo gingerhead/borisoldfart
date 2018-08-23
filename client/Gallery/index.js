@@ -39,7 +39,6 @@ export default class Gallery extends Component {
         return (
             <div className='slide' key={index} >
                 <img src={imgUrl} />
-                <div className='background' style={{backgroundImage: `url(${imgUrl})`}} />
             </div>
         )
     }
@@ -53,7 +52,7 @@ export default class Gallery extends Component {
     render() {
         return (
             <div ref={(node) => this.galleryElement = node} className='gallery'>
-                <ReactSwipe >
+                <ReactSwipe>
                     {this.rImages()}
                 </ReactSwipe>
             </div>
