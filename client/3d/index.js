@@ -50,10 +50,11 @@ export default class ModelEditorViewer {
         });
 
         // plane
-        var plane = new THREE.Mesh(new THREE.PlaneGeometry(160, 90),img);
+        var plane = new THREE.Mesh(new THREE.PlaneGeometry(15.1, 10),img);
         plane.overdraw = true;
 
         var scene = new THREE.Scene();
+        this.scene_ = scene;
         scene.add(plane);
         // create a camera, which defines where we're looking at.
         var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -64,12 +65,13 @@ export default class ModelEditorViewer {
         //webGLRenderer.setClearColor(new THREE.Color(0xffffff));
         webGLRenderer.setSize(window.innerWidth, window.innerHeight);
         webGLRenderer.shadowMap.enabled = true;
-        camera.position.x = -10;
-        camera.position.y = 15;
-        camera.position.z = 25;
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = 15;
         camera.lookAt(new THREE.Vector3(0, 0, 0));
-        var orbitControls = new OrbitControls(camera);
-        orbitControls.autoRotate = false;
+
+        // var orbitControls = new OrbitControls(camera);
+        // orbitControls.autoRotate = false;
         var clock = new THREE.Clock();
         var ambi = new THREE.AmbientLight(0x181818);
         scene.add(ambi);
@@ -78,7 +80,6 @@ export default class ModelEditorViewer {
         spotLight.intensity = 0.6;
         scene.add(spotLight);
         // add the output of the renderer to the html element
-        console.log(document.getElementById("3d"));
         document.getElementById("3d").appendChild(webGLRenderer.domElement);
         var renderPass = new RenderPass(scene, camera);
         var effectGlitch = new GlitchPass(64);
@@ -87,34 +88,28 @@ export default class ModelEditorViewer {
         composer.addPass(renderPass);
         composer.addPass(effectGlitch);
         // setup the control gui
-        var controls = new function () {
-            this.goWild = false;
-            this.updateEffect = function () {
-                effectGlitch.goWild = controls.goWild;
-            };
-        };
         // call the render function
         var step = 0;
 
-        const env = require('./env').create({config: {}, scene});
-        const tweening = require('./tweening').create();
-        this.tweening = tweening;
-        const particles = require('./particles').create({config: {}, tweening, container: env.gear});
-
-        const tex = new THREE.TextureLoader().load( "textures/particle.png" );
-        var geometry = new THREE.SphereGeometry( 5, 32, 32 );
-        var sphere = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {color: 0xffff00} ) );
-        sphere.scale.set(1, 1, 1);
-        particles.createFromMesh(sphere, {texture: tex});
-
-        const run = () => setTimeout(() => {
-            particles.blow();
-            setTimeout(() => {
-                console.log('111');
-                particles.toGear();
-            }, 5000);
-            run();
-        }, 5000);
+        // const env = require('./env').create({config: {}, scene});
+        // const tweening = require('./tweening').create();
+        // this.tweening = tweening;
+        // const particles = require('./particles').create({config: {}, tweening, container: env.gear});
+        //
+        // const tex = new THREE.TextureLoader().load( "textures/particle.png" );
+        // var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+        // var sphere = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {color: 0xffff00} ) );
+        // sphere.scale.set(1, 1, 1);
+        // particles.createFromMesh(sphere, {texture: tex});
+        //
+        // const run = () => setTimeout(() => {
+        //     particles.blow();
+        //     setTimeout(() => {
+        //         console.log('111');
+        //         particles.toGear();
+        //     }, 5000);
+        //     run();
+        // }, 5000);
 
         // setTimeout(() => {
         //     this.moveCamera(this.camera_, {x: [0], y: [0], z: [0]}, 100, {})
@@ -124,28 +119,30 @@ export default class ModelEditorViewer {
 
         scene.add(plane);
         render();
-
         this.setupSize();
 
+
+        console.log(composer);
 
         function render() {
             //sphere.rotation.y=step+=0.01;
             var delta = clock.getDelta();
-            particles.animate();
-            tweening.animate();
-            env.animate();
-            orbitControls.update(delta);
+            // particles.animate();
+            // tweening.animate();
+            // env.animate();
+            //orbitControls.update(delta);
             // render using requestAnimationFrame
             requestAnimationFrame(render);
             composer.render(delta);
+
         }
 
-        const instance = create(this, {
-            env,
-            particles,
-            tweening,
-            domElement: this.renderer_.domElement,
-        });
+        // const instance = create(this, {
+        //     env,
+        //     particles,
+        //     tweening,
+        //     domElement: this.renderer_.domElement,
+        // });
 
     }
 
@@ -165,6 +162,19 @@ export default class ModelEditorViewer {
         this.currentRafRequest_ = requestAnimationFrame(this.animate);
     };
 
+
+    deteremineScreenCoordinate(object, camera) {
+        var vector = new THREE.Vector3();
+        vector.setFromMatrixPosition(object.matrixWorld);
+        vector.project(camera);
+        var width = window.innerWidth, height = window.innerHeight;
+        var widthHalf = width / 2, heightHalf = height / 2;
+        vector.x = ( vector.x * widthHalf ) + widthHalf;
+        vector.y = -( vector.y * heightHalf ) + heightHalf;
+        return vector;
+    }
+
+
     setupSize() {
         const setSize = () => {
             const w = window.innerWidth;
@@ -172,8 +182,8 @@ export default class ModelEditorViewer {
             this.camera_.aspect = w / h;
             this.camera_.updateProjectionMatrix();
             this.renderer_.setSize(w, h);
-        };
 
+        };
         setSize();
         window.addEventListener('resize', setSize);
 

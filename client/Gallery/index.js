@@ -49,12 +49,22 @@ export default class Gallery extends Component {
         })
     }
 
+    next = () => {
+        this.reactSwipe.next();
+    };
+
+    prev = () => {
+        this.reactSwipe.prev();
+    };
+
     render() {
         return (
             <div ref={(node) => this.galleryElement = node} className='gallery'>
-                <ReactSwipe>
+                <ReactSwipe ref={reactSwipe => this.reactSwipe = reactSwipe}>
                     {this.rImages()}
                 </ReactSwipe>
+                <div className='next' onClick={this.next} />
+                <div className='prev' onClick={this.prev} />
             </div>
         )
     }
