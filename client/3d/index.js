@@ -44,7 +44,7 @@ export default class ModelEditorViewer {
         // Add the loaded object to the scene
         // once everything is loaded, we run our Three.js stuff.
         // create a scene, that will hold all our elements such as objects, cameras and lights.
-        const texture = new THREE.TextureLoader().load( "textures/front.jpg" );
+        const texture = new THREE.TextureLoader().load( "upload/front.jpg" );
         var img = new THREE.MeshBasicMaterial({ //CHANGED to MeshBasicMaterial
             map: texture
         });

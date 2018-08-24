@@ -15,7 +15,7 @@ module.exports = {
     output: {
         path: path.join(__dirname, 'dist'),
         filename: 'bundle.js',
-        publicPath: '/dist/'
+        publicPath: ''
     },
     module: {
         loaders: [
@@ -42,7 +42,7 @@ module.exports = {
                 exclude: path.join(__dirname, 'node_modules')
             },
             {
-                test: /\.(woff|woff2|eot|otf|ttf|svg|jpg|png|gif|html)$/,
+                test: /\.(woff|woff2|eot|otf|ttf|svg|jpg|png|gif|html|JPG)$/,
                 use: {
                     loader: 'url-loader',
                     options: {

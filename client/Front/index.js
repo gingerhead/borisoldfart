@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import cn from 'classnames';
+import once from 'lodash/once';
 
 import './index.sass'
 
@@ -9,37 +11,52 @@ import ModelEditorViewer from '3d';
 export default class Front extends Component {
     state = {
         showGallery: false
-    }
+    };
 
     componentDidMount() {
-        const typed = new Typed(this.typed, {
-            //strings: ['Lorem Ipsum - это текст-"рыба", часто используемый в печати и вэб-дизайне. \nLorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. \n В то время некий безымянный печатник создал большую коллекцию размеров \n и форм шрифтов, используя Lorem Ipsum для распечатки образцов. \nLorem Ipsum не только успешно пережил без заметных изменений пять веков,\n но и перешагнул в электронный дизайн.\n Его популяризации в новое время послужили публикация листов Letraset с\n образцами Lorem Ipsum в 60-х годах и, в более недавнее время, \nпрограммы электронной вёрстки типа Aldus PageMaker, в шаблонах которых используется \n Lorem Ipsum.', 'HAPPY B-DAY MAZAFAKA', '.'],
-            //strings: ['npm install^5000\n `installing components...` ^1000\n `Fetching from source...`'],
-            strings: ['Lorem Ipsum - это текст-"рыба", часто используемый в печати и вэб-дизайне. Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров \n и форм шрифтов, используя Lorem Ipsum для распечатки образцов. \nLorem Ipsum не только успешно пережил без заметных изменений пять веков,\n но и перешагнул в электронный дизайн.\n Его популяризации в новое время послужили публикация листов Letraset с\n образцами Lorem Ipsum в 60-х годах и, в более недавнее время, \nпрограммы электронной вёрстки типа Aldus PageMaker, в шаблонах которых используется \n Lorem Ipsum.', 'HAPPY B-DAY MAZAFAKA', '.'],
-            typeSpeed: 50,
-            backSpeed: 0,
-            backDelay: 500,
+        this.typedFirst = new Typed(this.typedNode, {
+            strings: ['BORIS OLD FART AHAHAHA', 'HAPPY B-DAY MAZAFAKA', require('./data/congratulations').default],
+            typeSpeed: 20,
+            backSpeed: 5,
+            backDelay: 2500,
             startDelay: 1000,
             loop: false,
-            onComplete: function(self) { this.viewer = new ModelEditorViewer(); },
+            fadeOut: true,
         });
     }
 
     render() {
         return (
             <div className='front'>
-                {this.state.showGallery && <Gallery />}
                 <div
                     id='3d'
-                    className={'3d'}
-                    onClick={() => this.setState({showGallery: true})}
+                    className={cn('mount-3d', {'hidden': this.state.showGallery})}
+                    onClick={() => {
+                        this.setState({showGallery: true});
+                        this.typedSecond.destroy();
+                    }}
                     ref={(container) => { this.container = container; }}/>
-                <div className='text' onClick={() => {}}>
+                <div className={cn('text', {'hidden': this.state.showGallery})} onClick={once((e) => {
+                    this.typedFirst.destroy();
+                    this.typedSecond = new Typed(this.typedNode, {
+                        strings: ['CLICK TO PROCEED'],
+                        typeSpeed: 20,
+                        backSpeed: 5,
+                        backDelay: 2500,
+                        startDelay: 0,
+                        loop: false,
+                        fadeOut: true,
+                        onComplete: function(self) {
+                            this.viewer = new ModelEditorViewer();
+                        }
+                    });
+                })}>
                     <span> > </span>
                     <span className='hb-string' style={{width: '100vw'}}>
-                        <span ref={node => this.typed = node} id='typed'></span>
+                        <span ref={node => this.typedNode = node} id='typed' />
                     </span>
                 </div>
+                {this.state.showGallery && <Gallery />}
             </div>
         )
     }

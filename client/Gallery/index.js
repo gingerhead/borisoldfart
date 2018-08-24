@@ -4,7 +4,7 @@ import ReactSwipe from 'react-swipe';
 
 import './index.sass';
 
-const context = require.context('./images', false, /^\.\/.+\.jpg/);
+const context = require.context('./images', false, /^\.\/.+\.jpg|JPG|gif/i);
 
 function imagesLoaded(parentNode) {
     const imgElements = [...parentNode.querySelectorAll("img")];
@@ -38,7 +38,7 @@ export default class Gallery extends Component {
     renderImage(imgUrl, index) {
         return (
             <div className='slide' key={index} >
-                <img src={imgUrl} />
+                <div className='background' style={{backgroundImage: `url(${imgUrl})`}} />
             </div>
         )
     }

@@ -4,7 +4,7 @@
   "description": "boris 30+ years site",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf dist && NODE_ENV=production webpack",
+    "build": "rm -rf dist && mkdir -p dist && ln -s $PWD/upload $PWD/dist && NODE_ENV=production webpack",
     "start": "webpack-dev-server --hot --inline"
   },
   "author": "",
